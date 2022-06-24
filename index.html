@@ -1,0 +1,93 @@
+<style>
+    body {
+        background-color: black;
+        font-family: monospace;
+        color:white;
+        font-size: 5vmin;
+        text-align: center;
+        padding:3vmin;
+    }
+
+    button {
+        border:none;
+        background-color: transparent;
+        color:white;
+        font-size: 5vmin;
+        opacity: 0.5;
+    }
+
+    button:hover {
+        opacity:1;
+    }
+
+    .check {
+        color:greenyellow;
+    }
+
+    .x {
+        color:red;
+    }
+
+    input#header {
+        background-color: transparent;
+        font-family: monospace;
+        color:white;
+        font-size: 7.5vmin;
+        text-align: center;
+    }
+
+    .task {
+        background-color: transparent;
+        font-family: monospace;
+        color:white;
+        font-size: 5vmin;
+        text-align: center;
+    }
+</style>
+
+<h1><input id="header" onchange="headerChange()" value="Title" maxlength="20"></input></h1>
+<div id="tasks">
+</div>
+<button onclick="add()">+</button>
+
+<script>
+    if (localStorage.tasks) {
+        document.getElementById("tasks").innerHTML =  localStorage.tasks
+    }
+    if (localStorage.header) {
+        document.getElementById("header").value = localStorage.header
+    }
+
+    function save() {
+        localStorage.tasks = document.getElementById("tasks").innerHTML
+    }
+
+    function add() {
+        id = ""
+        for (i=0; i<Math.random()*100; i++) {
+            randStr = "abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVXYZ1234567890!@#$%^&*()-_+=[]{}|?,.?"
+            id += randStr.split("")[Math.floor(Math.random()*randStr.length)]
+        }
+        document.getElementById("tasks").innerHTML +=  `<p id=${id}><input type="text" id=${id+"i"} onchange="taskchange(this)" value="stuff to do" class="task"></input>&nbsp;<button id=${id+"c"} class="check" onclick="done(this)">✓</button><button id=${id+"x"} class="x" onclick="dismiss(this)">X</button></p>`
+        save()
+    }
+    
+    function done(X) {
+        document.getElementById(X.id.slice(0, -1)).hidden = true
+        save()
+    }
+    
+    function dismiss(X) {
+        document.getElementById(X.id.slice(0, -1)).hidden = true
+        save()
+    }
+
+    function headerChange() {
+        localStorage.header = document.getElementById("header").value
+    }
+
+    function taskchange(X) {
+        document.getElementById(X.id.slice(0, -1)).innerHTML = `<input type="text" id=${X.id} onchange="taskchange(this)" value="${X.value}" class="task"></input>&nbsp;<button id=${X.id.slice(0, -1)+"c"} class="check" onclick="done(this)">✓</button><button id=${X.id.slice(0, -1) + "x"} class="x" onclick="dismiss(this)">X</button>`
+        save()
+    }
+</script>
